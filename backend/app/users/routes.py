@@ -1,22 +1,8 @@
-from flask import Flask, request, jsonify
-import os
+from flask import request, Blueprint, jsonify, Request, url_for, redirect, session
 
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from app.models.user_account_model import User
 
-app = Flask(__name__)
-
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASEDIR, 'dev_socialmedia.db')
-db = SQLAlchemy()
-Migrate(app, db)
-
-@app.route('/', methods=['GET'])
-def hello():
-    message = {
-        'text': 'Hello, World!'
-    }
-    return jsonify(message), 200
+user_bp = Blueprint('user', __name__)
 
 demo_users = [
     {
@@ -75,11 +61,11 @@ demo_users = [
     }
 ]
 
-@app.route('/users', methods=['GET'])
+@user_bp.route('/users', methods=['GET'])
 def get_all_accounts():
     return jsonify(demo_users), 200
     
-@app.route('/newuser', methods=['POST'])
+@user_bp.route('/newuser', methods=['POST'])
 def add_new_user():
     if request.is_json:
         data = request.get_json()
@@ -89,5 +75,10 @@ def add_new_user():
     else:
         return jsonify({'error': 'Request must be JSON'}), 400
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+@user_bp.route('/', methods=['GET'])
+def hello_user():
+    
+    return jsonify({
+        'message': 'This is user BP root.'
+    }), 200
