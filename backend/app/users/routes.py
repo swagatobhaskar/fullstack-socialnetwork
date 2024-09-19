@@ -1,6 +1,8 @@
-from flask import request, Blueprint, jsonify, Request, url_for, redirect, session
+from flask import request, Blueprint, jsonify, Request, url_for, redirect
 
 from app.models.user_account_model import User
+
+from app.extensions import db
 
 user_bp = Blueprint('user', __name__)
 
@@ -67,11 +69,24 @@ def get_all_accounts():
     
 @user_bp.route('/newuser', methods=['POST'])
 def add_new_user():
+
+    from werkzeug.security import generate_password_hash
+    
     if request.is_json:
         data = request.get_json()
-        fname = data.get('fname')
-        lname = data.get('lname')
-        return jsonify({"message": "User data received", "fname": fname, "lname": lname}), 200
+        email = data['email']
+        password = data.get('password')
+
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "User already exists"}), 409
+
+        password_hash = generate_password_hash(password)
+        new_user = User(email=email, password_hash=password_hash)
+        
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({"message": "User registered successfully!"}), 200
     else:
         return jsonify({'error': 'Request must be JSON'}), 400
 

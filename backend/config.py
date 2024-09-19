@@ -1,22 +1,24 @@
 from os import path, environ
+from dotenv import load_dotenv
 
 BASEDIR = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(BASEDIR, ".env"))
 
 class Config:
     """Base config."""
     DEBUG = False
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
+    SECRET_KEY = environ.get('SECRET_KEY')
 
 class DevConfig(Config):
-    FLASK_ENV = 'development'
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(BASEDIR, 'dev_socialmedia.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class ProdConfig(Config):
-    FLASK_ENV = 'production'
     DEBUG = False
     TESTING = False
-    # add postgresql path
-    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(BASEDIR, 'todo_data.db') 
+    # SQLALCHEMY_DATABASE_URI = <add postgresql path>
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
