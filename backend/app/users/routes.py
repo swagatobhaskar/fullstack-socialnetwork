@@ -1,6 +1,6 @@
 from flask import request, Blueprint, jsonify, Request, url_for, redirect
 
-from app.models.user_account_model import User
+from app.models.user_account_model import User, Profile
 
 from app.extensions import db
 
@@ -67,8 +67,8 @@ demo_users = [
 def get_all_accounts():
     return jsonify(demo_users), 200
     
-@user_bp.route('/newuser', methods=['POST'])
-def add_new_user():
+@user_bp.route('/signup', methods=['POST'])
+def signup_new_user():
 
     from werkzeug.security import generate_password_hash
     
@@ -91,9 +91,51 @@ def add_new_user():
         return jsonify({'error': 'Request must be JSON'}), 400
 
 
-@user_bp.route('/', methods=['GET'])
-def hello_user():
+@user_bp.route('/profile/<int:id>', methods=['GET', 'PUT', 'POST'])
+def user_profile(id=None):
+    if request.method == 'POST':
+        new_user_profile_data = request.get_json()
+        new_profile = Profile(
+            fname = new_user_profile_data['fname'],
+            lname = new_user_profile_data['lname'],
+            username = new_user_profile_data['username'],
+            dob = new_user_profile_data['dob'],
+            sex = new_user_profile_data['sex'],
+            bio = new_user_profile_data['bio'],
+            region = new_user_profile_data['region'],
+            city = new_user_profile_data['city'],
+            area = new_user_profile_data['area']
+        )
+        db.session.add(new_profile)
+        db.session.commit()
+        return jsonify({'message': 'Data saved successfully!'}), 201
     
-    return jsonify({
-        'message': 'This is user BP root.'
-    }), 200
+    elif request.method == 'PUT':
+        current_user = db.session.get(Profile, id)
+        if not current_user:
+            return jsonify({'error': f'User with id {id} not found!'}), 404
+        
+        modified_profile_data = request.get_json()
+        if not modified_profile_data:
+            return jsonify({"error": "Invalid data!"}), 400
+
+        current_user.fname = modified_profile_data['fname']
+        current_user.lname = modified_profile_data['lname']
+        current_user.username = modified_profile_data['username']
+        current_user.dob = modified_profile_data['dob']
+        current_user.sex = modified_profile_data['sex']
+        current_user.bio = modified_profile_data['bio']
+        current_user.region = modified_profile_data['region']
+        current_user.city = modified_profile_data['city']
+        current_user.area = modified_profile_data['area']
+        db.session.commit()
+        return jsonify({'message', 'Data updated successfully!'}), 200
+    
+    elif request.method == 'GET':
+        current_user = db.session.get(Profile, id)
+        if not current_user:
+            return jsonify({'error': f'User with id {id} not found!'}), 404
+        
+        current_user_profile = Profile.query.get(id=id)
+        return jsonify(current_user_profile), 200
+    
