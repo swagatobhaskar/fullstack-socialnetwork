@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from os import environ, getenv
 
 from app.extensions import db
-from app.models.user_account_model import User
+from app.models.user_account_model import User, Profile
 
 from app.users.routes import user_bp
 
