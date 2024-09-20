@@ -43,39 +43,9 @@ def new_user_signup():
         return jsonify({"error": "Request must be JSON"}), 400
 
 
-@user_bp.route('/profile/<int:id>', methods=['GET', 'PUT', 'POST'])
-def user_profile(id=None):
-
-    if request.method == 'GET':
-        current_user = db.session.get(Profile, id)
-        if not current_user:
-            return jsonify({'error': f'User with id {id} not found!'}), 404
-        
-        current_user_profile = Profile.query.get(id=id)
-        return jsonify(current_user_profile), 200
-        
-    elif request.method == 'PUT':
-        current_user = db.session.get(Profile, id)
-        if not current_user:
-            return jsonify({'error': f'User with id {id} not found!'}), 404
-        
-        modified_profile_data = request.get_json()
-        if not modified_profile_data:
-            return jsonify({"error": "Invalid data!"}), 400
-
-        current_user.fname = modified_profile_data['fname']
-        current_user.lname = modified_profile_data['lname']
-        current_user.username = modified_profile_data['username']
-        current_user.dob = modified_profile_data['dob']
-        current_user.sex = modified_profile_data['sex']
-        current_user.bio = modified_profile_data['bio']
-        current_user.region = modified_profile_data['region']
-        current_user.city = modified_profile_data['city']
-        current_user.area = modified_profile_data['area']
-        db.session.commit()
-        return jsonify({'message', 'Data updated successfully!'}), 200
-    
-    elif request.method == 'POST':
+@user_bp.route('/profile', methods=['POST'])
+def create_profile():
+    if request.method == 'POST':
         new_user_profile_data = request.get_json()
         new_profile = Profile(
             fname = new_user_profile_data['fname'],
@@ -92,4 +62,46 @@ def user_profile(id=None):
         db.session.add(new_profile)
         db.session.commit()
         return jsonify({'message': 'Data saved successfully!'}), 201
-    
+
+@user_bp.route('/profile/<int:id>', methods=['GET', 'PUT'])
+def modify_profile(id):
+
+    if request.method == 'GET':
+        current_user_profile = db.session.get(Profile, id)
+        if not current_user_profile:
+            return jsonify({'error': f'User with id {id} not found!'}), 404
+        else:
+            return jsonify({
+                "id": current_user_profile.id,
+                "user_id": current_user_profile.user_id,
+                "fname": current_user_profile.fname,
+                "lname": current_user_profile.lname,
+                "dob": current_user_profile.dob,
+                "bio": current_user_profile.bio,
+                "username": current_user_profile.username,
+                "region": current_user_profile.region,
+                "city": current_user_profile.city,
+                "area": current_user_profile.area
+                }), 200
+        
+    elif request.method == 'PUT':
+        current_user_profile = db.session.get(Profile, id)
+        if not current_user_profile:
+            return jsonify({'error': f'User with id {id} not found!'}), 404
+        
+        modified_profile_data = request.get_json()
+        if not modified_profile_data:
+            return jsonify({"error": "Invalid data!"}), 400
+
+        current_user_profile.fname = modified_profile_data['fname']
+        current_user_profile.lname = modified_profile_data['lname']
+        current_user_profile.username = modified_profile_data['username']
+        current_user_profile.dob = modified_profile_data['dob']
+        current_user_profile.sex = modified_profile_data['sex']
+        current_user_profile.bio = modified_profile_data['bio']
+        current_user_profile.region = modified_profile_data['region']
+        current_user_profile.city = modified_profile_data['city']
+        current_user_profile.area = modified_profile_data['area']
+        db.session.commit()
+        return jsonify({'message', 'Data updated successfully!'}), 200
+        
