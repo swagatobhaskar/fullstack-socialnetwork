@@ -32,7 +32,7 @@ class Profile(db.Model):
     fname = db.Column(db.String(30), nullable=False)
     lname = db.Column(db.String(30), nullable=True)
     username = db.Column(db.String(30), nullable=True)
-    dob = db.Column(db.DateTime, nullable=True)
+    dob = db.Column(db.Date, nullable=True)
     sex = db.Column(db.Enum(SexEnum), nullable=True)
     bio = db.Column(db.Text, nullable=True)
     region = db.Column(db.String(100), nullable=True)
