@@ -1,5 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
+<<<<<<< HEAD
 from sqlalchemy .sql import func
+=======
+from sqlalchemy.sql import func
+>>>>>>> user_content_backend
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 
