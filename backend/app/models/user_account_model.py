@@ -10,6 +10,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(128))
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
     profile = db.relationship('Profile', uselist=False, back_populates='user')
+    posts = db.relationship("Post", back_populates="user") # add cascade rule
 
     def __repr__(self):
         return f"{self.id} | {self.email}"

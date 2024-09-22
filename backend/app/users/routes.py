@@ -81,7 +81,8 @@ def modify_profile(id):
                 "username": current_user_profile.username,
                 "region": current_user_profile.region,
                 "city": current_user_profile.city,
-                "area": current_user_profile.area
+                "area": current_user_profile.area,
+                "sex": current_user_profile.sex.value
                 }), 200
         
     elif request.method == 'PUT':
