@@ -16,6 +16,8 @@ function UserLogin() {
     };
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        
         try {
             const loginURL = `http://127.0.0.1:5000/user/login`
             const response = await fetch(loginURL, {
