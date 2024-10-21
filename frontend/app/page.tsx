@@ -1,13 +1,20 @@
 import Image from "next/image";
+
 import bg from '@/public/images/background/bewakoof-unsplash.jpg';
 import logo from '@/public/images/logo/social-icons-clipart.png';
+import SignUp from "@/components/SignupForm";
 
 export default function Home() {
   return (
     <div>
       <header className="border-b-2 border-blue-50 h-16">
-        <Image className="ml-20 my-1 size-14" src={logo} alt="temporary-logo" placeholder="blur"
-          quality={80} style={{objectFit: 'cover',}}
+        <Image
+          className="ml-20 my-1 size-14"
+          src={logo}
+          alt="temporary-logo"
+          placeholder="blur"
+          quality={80}
+          style={{objectFit: 'cover',}}
         />
       </header>
       <main className="relative h-screen">
@@ -26,9 +33,7 @@ export default function Home() {
             </div>
           </aside>
           <aside className="basis-1/4 bg-blue-600">
-            <div className="">
-              <p>Form Section</p>
-            </div>
+            <SignUp />
           </aside>
         </div>
       </main>
